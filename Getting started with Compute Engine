@@ -1,0 +1,80 @@
+#LAB: Google Cloud Fundamentals: Getting Started with Compute Engine
+##Objectives:
+In this lab you will learn how to perform the following tasks
+    Create a Compute Engine virtual machine using the Google Cloud Platform (GCP) Console.
+
+    Create a Compute Engine virtual machine using the gcloud command-line interface.
+
+    Connect between the two instances.
+
+#Steps:
+
+1. Create a Compute Engine virtual machine using the Google Cloud Platform Console
+
+     gcloud compute instances create my-vm-1 --machine-type=n1-standard-1 --zone=us-central1-a --image-project=debian-cloud --image=debian-9-stretch-v20190213 --subnet=default --tags=http
+     gcloud compute firewall rules create allow-http --action=ALLOW --destination=INGRESS --rules=http:80 --target-tags=http
+
+2. Create a Compute Engine Virtual machine using the gcloud comand-line interface.
+
+     gcloud config set compute/zone us-central1-b
+     gcloud compute instances create my-vm-2 --machine-type=n1-standard-1 --image-project=debian-cloud --image=debian-9-stretch-v20190213 --subnet=default
+
+3. Connect between the two instances.
+
+ #Use the ping command to confirm my-vm-2 can reach my-vm-1
+
+ -connect to my-vm-2
+
+     gcloud compute ssh my-vm-2
+
+ -ping my-vm-1 from my-vm-2
+
+     ping -c 3 my-vm-1
+
+ -ssh into my-vm-1 through my-vm-2
+     
+     ssh my-vm-1
+
+ #Install nginx-webserver on my-vm-1
+
+ -Update the vm dependencies
+
+     sudo apt-get update 
+ -Install nginx
+
+     sudo apt-get install nginx-light -y
+
+ #Use the nano text editor to edit the custom message on the webserver
+     
+     sudo nano /var/www/html/index.nginx-debian.html
+
+ #Include a "hi from [your name]" in the h1 heading
+      
+     Hi from Feyisayo
+
+ #Confirm the web server is serving my-vm-1 by making a curl command
+      
+      curl http://localhost
+
+ #Exit from my-vm-1
+
+      exit
+
+ #Confirm that my-vm-2 can reach web server on my-vm-1
+     
+     curl http://my-vm-1
+
+ Result
+      You see the webserver homepage in html format including yur custom message
+
+ #Connect to my-vm-1 through the http port with its external IP
+
+ -Get the external IP by running this command
+
+     gcloud compute instances list --zone=us=central1-a
+
+ -Copy the External IP address and paste in your web browser's url slot and click enter
+
+   Result
+        You see the homepage of your webserver with the custom message in it
+
